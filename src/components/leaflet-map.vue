@@ -36,16 +36,13 @@ export default {
     LCircleMarker,
     LIcon,
   }, 
+  props: ["currentLocation"],
   data () {
     return {
-      zoom: 7,
+      zoom: 12,
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       AQI_data: {},
-      currentLocation: {
-        lat: 23.7,
-        lon: 121
-      },
       circle: {
         center: [23.7, 121],
         radius: 6,
@@ -58,9 +55,6 @@ export default {
     }
   },
   mounted() {
-    //get user's location
-    this.getCurrentLocation();
-
     //get AQI data
     this.$axios.get("http://opendata2.epa.gov.tw/AQI.json")
       .then(response => {
@@ -74,16 +68,6 @@ export default {
   methods: {
     getMarkLatLon(lat, lon){
       return L.latLng(lat, lon);
-    },
-    getCurrentLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.showPosition);
-      }
-    },
-    showPosition: function(position){
-      this.currentLocation.lat = position.coords.latitude;
-      this.currentLocation.lon = position.coords.longitude;
-      this.zoom = 12;
     },
     getAQIColor: function(value){
       let colorStr = "grey";
