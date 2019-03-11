@@ -1,14 +1,14 @@
 <template>
   <l-map  :zoom="zoom" :center="getMarkLatLon(currentLocation.lat, currentLocation.lon)">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <!-- <l-marker v-for="mark in AQI_data" :key="mark.County + mark.SiteName + mark.Status" :lat-lng="getMarkLatLon(mark.Latitude, mark.Longitude)">
-      <l-popup :content="mark.SiteName"></l-popup>
-    </l-marker> -->
+    <l-control position="bottomleft" >
+      <aqiColorAxis />
+    </l-control>
     <l-circle-marker
       v-for="mark in AQI_data" :key="mark.County + mark.SiteName + mark.Status" 
       :lat-lng="getMarkLatLon(mark.Latitude, mark.Longitude)"
       :radius="15"
-      :color="getAQIColor(mark.AQI)"
+      color="grey"
       :fill="true"
       :fillColor="getAQIColor(mark.AQI)"
       :fillOpacity="0.7"
@@ -23,7 +23,8 @@
 
 <script>
 // import * as Vue2Leaflet from 'vue2-leaflet'
-import { LMap, LTileLayer, LMarker, LPopup, LCircleMarker, LIcon } from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker, LPopup, LCircleMarker, LIcon, LControl } from 'vue2-leaflet';
+import aqiColorAxis from '../components/aqi-color-axis'
 import locationIcon from '../assets/locationIcon.svg'
 
 export default {
@@ -35,6 +36,8 @@ export default {
     LPopup,
     LCircleMarker,
     LIcon,
+    LControl,
+    aqiColorAxis,
   }, 
   props: ["currentLocation"],
   data () {
