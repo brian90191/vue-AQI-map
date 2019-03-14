@@ -1,12 +1,15 @@
 <template>
   <l-map  :zoom="zoom" :center="getMarkLatLon(currentLocation.lat, currentLocation.lon)">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
-    <l-control position="bottomright" >
+    <l-control position="bottomleft" >
       <aqiColorAxis />
     </l-control>
     <l-control position="topright" >
-        <aqiInfoBox :aqiData="currentData" />
-      </l-control>
+      <aqiInfoBox :aqiData="currentData" />
+    </l-control>
+    <l-control position="bottomright" >
+      <weather :currentLocation="currentLocation" />
+    </l-control>
     <l-circle-marker
       v-for="mark in AQI_data" :key="mark.County + mark.SiteName + mark.Status" 
       :lat-lng="getMarkLatLon(mark.Latitude, mark.Longitude)"
@@ -18,7 +21,6 @@
       @click="currentData = mark"
     >
       <l-popup :content="mark.SiteName"></l-popup>
-      
     </l-circle-marker>
     <l-marker
         :lat-lng="[currentLocation.lat, currentLocation.lon]"
@@ -32,12 +34,13 @@ import { LMap, LTileLayer, LMarker, LPopup, LCircleMarker, LIcon, LControl } fro
 import aqiColorAxis from '../components/aqi-color-axis'
 import aqiInfoBox from '../components/aqi-info-box'
 import locationIcon from '../assets/locationIcon.svg'
+import weather from '../components/current-weather'
 
 export default {
   name: 'VueLeaflet',
   components: {
     LMap, LTileLayer, LMarker, LPopup, LCircleMarker, LIcon, LControl,
-    aqiColorAxis, aqiInfoBox
+    aqiColorAxis, aqiInfoBox, weather,
   }, 
   props: ["currentLocation"],
   data () {

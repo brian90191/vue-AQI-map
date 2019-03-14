@@ -1,5 +1,5 @@
 <template>
-  <div class='my-legend'>
+  <div class='my-legend' v-show="'SiteName' in aqiData">
     <div class='legend-title' :style="{ background: getAQIColor(aqiData.AQI) }">{{ aqiData.County + aqiData.SiteName }}</div>
     <div class='legend-scale'>
       <ul class='legend-labels'>

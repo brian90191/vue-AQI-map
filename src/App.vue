@@ -1,19 +1,16 @@
 <template>
   <div id="app">
     <leafletMap :currentLocation="currentLocation" />
-    <weather :currentLocation="currentLocation" />
   </div>
 </template>
 
 <script>
 import leafletMap from './components/leaflet-map'
-import aqiColorAxis from './components/aqi-color-axis'
-import weather from './components/current-weather'
 
 export default {
   name: 'app',
   components: {
-    leafletMap, weather,
+    leafletMap,
   },
   data () {
     return {
