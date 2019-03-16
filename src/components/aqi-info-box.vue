@@ -52,7 +52,7 @@ export default {
 
 <style scoped>
   .my-legend {
-    height: 160px;
+    height: 170px;
     background-color: white;
     padding: 10px;
     border-radius: 3px;

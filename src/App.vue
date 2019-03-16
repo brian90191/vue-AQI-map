@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <leafletMap :currentLocation="currentLocation" />
+    <leafletMap :userLocation="userLocation" />
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   },
   data () {
     return {
-      currentLocation: {
+      userLocation: {
         lat: 23.7,
         lon: 121
       },
@@ -25,17 +25,13 @@ export default {
     this.getCurrentLocation();
   },
   methods: {
-    getMarkLatLon(lat, lon){
-      return L.latLng(lat, lon);
-    },
     getCurrentLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(this.showPosition);
+        navigator.geolocation.getCurrentPosition(position => {
+          this.userLocation.lat = position.coords.latitude;
+          this.userLocation.lon = position.coords.longitude;
+        });
       }
-    },
-    showPosition: function(position){
-      this.currentLocation.lat = position.coords.latitude;
-      this.currentLocation.lon = position.coords.longitude;
     },
   }
 }

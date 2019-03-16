@@ -36,25 +36,28 @@
 
 <script>
 export default {
-  props: ["currentLocation"],
+  props: ["LatLon"],
   data() {
     return {
       owmUrl: "http://api.openweathermap.org/data/2.5/weather?",
       ownAppid: "d1a482530f24a5061dbe554ca1a11a80",
       owm: {},
+      owmLatLon: this.LatLon,
     }
   },
   mounted() {
     //get weather data
-    let weatherAPI = `${this.owmUrl}lang=ZH_TW&lat=${this.currentLocation.lat}&lon=${this.currentLocation.lon}&appid=${this.ownAppid}`;
-    this.$axios.get(weatherAPI)
-      .then(response => {
-        console.log(response);
-        this.owm = response.data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.getOWMData();
+  },
+  watch: { 
+    LatLon: {
+      immediate: true,
+      deep: true,
+      handler(newVal, oldVal) {
+        this.owmLatLon = newVal;
+        this.getOWMData();
+      }
+    }
   },
   computed:{
       getCityName: function(){
@@ -94,31 +97,19 @@ export default {
       },
   },
   methods: {
-      getCurrentLocWeather: function() {
-        this.weatherAPI = owmUrl+"lang=ZH_TW&lat="+this.lat+"&lon="+this.lon+"&appid=" + ownAppid;
-        vm = this;
-        fetch(this.weatherAPI)
-        .then(function(response) {
-              if (response.status >= 200 && response.status < 300) {
-                  return response.json();
-              } else {
-                var error = new Error(response.statusText);
-                error.response = response;
-                throw error;
-              }    
-            })
-            .then(function(data) {
-              vm.owm = data;
-            })
-            .catch(function(error) {
-              modalVM.setStatus("error");
-            });
-      },
-      resetLatLon: function(lat,lon){
-        this.lat = lat;
-        this.lon = lon;
-      }
+    getOWMData(){
+      //get weather data
+      let weatherAPI = `${this.owmUrl}lang=ZH_TW&lat=${this.owmLatLon.lat}&lon=${this.owmLatLon.lon}&appid=${this.ownAppid}`;
+      this.$axios.get(weatherAPI)
+        .then(response => {
+          console.log(response);
+          this.owm = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
+  }
 }
 </script>
 
@@ -140,10 +131,7 @@ export default {
     width: 100%;
     margin: 0 auto;
     text-align: center;
-    background: -webkit-linear-gradient(rgba(0, 101, 121, 0.8), rgba(154, 205, 50, 0.8));
-    background: -o-linear-gradient(rgba(0, 101, 121, 0.8), rgba(154, 205, 50, 0.8));
-    background: -moz-linear-gradient(rgba(0, 101, 121, 0.8), rgba(154, 205, 50, 0.8));
-    background: linear-gradient(rgba(0, 101, 121, 0.8), rgba(154, 205, 50, 0.8));
+    background: #2ca6cb;
     -webkit-box-shadow: 0px 0px 49px 14px rgba(5, 5, 5, 0.6);
     -moz-box-shadow: 0px 0px 49px 14px rgba(5, 5, 5, 0.6);
     box-shadow: 0 1px 1px 0 #6e7878, 0 2px 5px 0 rgba(5, 5, 5, 0.6);
@@ -164,6 +152,7 @@ export default {
 
 .weatherCity {
     padding: 5px 5px 0 5px;
+    font-size: 16px;
 }
 
 .weatherIcon {
@@ -182,7 +171,7 @@ export default {
     position: absolute;
     right: -30px;
     bottom: 6px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .owi {

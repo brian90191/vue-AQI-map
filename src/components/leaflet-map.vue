@@ -1,6 +1,8 @@
 <template>
-  <l-map  :zoom="zoom" :center="getMarkLatLon(currentLocation.lat, currentLocation.lon)">
+  <l-map  :zoom="zoom" :center="getMarkLatLon(userLocation.lat, userLocation.lon)">
     <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
+
+    <!-- Control -->
     <l-control position="bottomleft" >
       <aqiColorAxis />
     </l-control>
@@ -8,8 +10,10 @@
       <aqiInfoBox :aqiData="currentData" />
     </l-control>
     <l-control position="bottomright" >
-      <weather :currentLocation="currentLocation" />
+      <weather :LatLon="selectLatLon" />
     </l-control>
+
+    <!-- Marker -->
     <l-circle-marker
       v-for="mark in AQI_data" :key="mark.County + mark.SiteName + mark.Status" 
       :lat-lng="getMarkLatLon(mark.Latitude, mark.Longitude)"
@@ -18,12 +22,12 @@
       :fill="true"
       :fillColor="getAQIColor(mark.AQI)"
       :fillOpacity="0.7"
-      @click="currentData = mark"
+      @click="markClick(mark)"
     >
       <l-popup :content="mark.SiteName"></l-popup>
     </l-circle-marker>
     <l-marker
-        :lat-lng="[currentLocation.lat, currentLocation.lon]"
+        :lat-lng="[userLocation.lat, userLocation.lon]"
         :icon="icon" > </l-marker>
   </l-map>
 </template>
@@ -42,7 +46,7 @@ export default {
     LMap, LTileLayer, LMarker, LPopup, LCircleMarker, LIcon, LControl,
     aqiColorAxis, aqiInfoBox, weather,
   }, 
-  props: ["currentLocation"],
+  props: ["userLocation"],
   data () {
     return {
       zoom: 12,
@@ -59,6 +63,7 @@ export default {
         iconSize: [64, 64],
       }),
       currentData: {},
+      selectLatLon: this.userLocation,
     }
   },
   mounted() {
@@ -71,6 +76,12 @@ export default {
       .catch(error => {
         console.log(error);
       });
+  },
+  watch: { 
+    userLocation: function(newVal, oldVal) {
+      this.selectLatLon.lat = this.userLocation.lat;
+      this.selectLatLon.lon = this.userLocation.lon;
+    }
   },
   methods: {
     getMarkLatLon(lat, lon){
@@ -97,7 +108,14 @@ export default {
       }
 
       return colorStr;
-    } 
+    },
+    markClick: function(mark){
+      this.currentData = mark;
+      this.selectLatLon = {
+        lat: mark.Latitude, 
+        lon: mark.Longitude
+      }
+    }
   },
 }
 </script>
