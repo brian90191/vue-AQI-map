@@ -2,6 +2,8 @@
 
 > AQI map made by vue2-leaflet
 
+![image](https://github.com/brian90191/vue-AQI-map/blob/master/src/assets/AQI_Screenshot.png)
+
 ## Build Setup
 
 ``` bash
